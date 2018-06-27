@@ -1,0 +1,59 @@
+{
+  "name": "Game",
+  "plural": "Games",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "numPlayers": {
+      "type": "number",
+      "required": true
+    },
+    "winnings": {
+      "type": "number",
+      "required": true
+    },
+    "date": {
+      "type": "date",
+      "index": true,
+      "defaultFn": "now"
+    },
+    "userId": {
+      "type": "number",
+      "required": true,
+      "index": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "User": {
+      "type": "belongsTo",
+      "model": "User",
+      "foreignKey": "userId",
+      "primaryKey": "id"
+    }
+  },
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {}
+}

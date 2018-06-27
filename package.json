@@ -1,0 +1,44 @@
+{
+  "name": "family_cards",
+  "version": "1.0.0",
+  "main": "server/server.js",
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "start": "node .",
+    "dev": "nodemon .",
+    "posttest": "npm run lint && nsp check"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.8",
+    "@fortawesome/fontawesome-free-solid": "^5.0.13",
+    "@fortawesome/react-fontawesome": "0.0.20",
+    "@mratsamy/fetch-redux-middleware": "^1.0.0",
+    "compression": "^1.0.3",
+    "cors": "^2.5.2",
+    "helmet": "^3.10.0",
+    "loopback": "^3.19.0",
+    "loopback-boot": "^2.6.5",
+    "loopback-component-explorer": "^6.0.0",
+    "loopback-connector-mysql": "^2.4.1",
+    "npm": "^6.1.0",
+    "serve-favicon": "^2.0.1",
+    "strong-error-handler": "^2.0.0",
+    "underscore": "^1.9.1",
+    "uuid": "^3.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^3.17.1",
+    "eslint-config-loopback": "^8.0.0",
+    "nodemon": "^1.17.5",
+    "nsp": "^3.2.1"
+  },
+  "repository": {
+    "type": "",
+    "url": ""
+  },
+  "license": "UNLICENSED",
+  "description": "familyCards"
+}

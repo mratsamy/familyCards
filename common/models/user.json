@@ -1,0 +1,129 @@
+{
+  "name": "user",
+  "base": "User",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "firstName": {
+      "type": "string",
+      "required": true
+    },
+    "lastName": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "games": {
+      "type": "hasMany",
+      "model": "Game",
+      "foreignKey": "",
+      "options": {
+        "nestRemoting": true
+      }
+    },
+    "roles": {
+      "type": "hasMany",
+      "model": "Role",
+      "foreignKey": "roleId",
+      "through": "RoleMapping"
+    }
+  },
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "WRITE",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {
+    "adminCreate": {
+      "accepts": [
+        {
+          "arg": "userId",
+          "type": "number",
+          "required": true,
+          "description": "The user id of the user who is being granted admin rights.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": [],
+      "description": "Grants the admin role to the selected user.",
+      "http": [
+        {
+          "path": "/admin",
+          "verb": "post"
+        }
+      ]
+    },
+    "adminDelete": {
+      "accepts": [
+        {
+          "arg": "userId",
+          "type": "number",
+          "required": true,
+          "description": "The user id of the user whose admin privilages are being removed.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": [],
+      "description": "Removed the admin role for the selected user.",
+      "http": [
+        {
+          "path": "/admin",
+          "verb": "delete"
+        }
+      ]
+    },
+    "initialState": {
+      "accepts": [],
+      "returns": [
+        {
+          "arg": "players",
+          "type": "array",
+          "root": false,
+          "description": "An array of user objects with their winnings and total games won"
+        },
+        {
+          "arg": "user",
+          "type": "object",
+          "root": false,
+          "description": "The current user's information"
+        }
+      ],
+      "description": "Used to load the homepage's initial state.",
+      "http": [
+        {
+          "path": "/initialState",
+          "verb": "get"
+        }
+      ]
+    }
+  }
+}
