@@ -4,7 +4,7 @@
     "port": 3306,
     "url": "",
     "database": "cards",
-    "password": "westmont09",
+    "password": "developmentPassword",
     "name": "db",
     "user": "family",
     "connector": "mysql"
