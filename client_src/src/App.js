@@ -16,7 +16,7 @@ fontawesome.library.add(faCircleNotch)
 
 const PrivateRoute = ({component: Component, ...rest}) => (
   <Route {...rest} render={(props) => (
-    rest.isLoggedIn == true ? 
+    rest.token.length > 0 ? 
       <Component location={props.location} {...Object.assign(rest, props)} /> :
       <Redirect to={{
         pathname: '/login',
@@ -32,15 +32,15 @@ class App extends Component {
   }
 
   render() {
-    const { isLoggedIn } = this.props
+    const { token } = this.props
 
     return (
       <div>
         {
-          (isLoggedIn) ? <Logout /> : ""
+          (token) ? <Logout /> : ""
         }
         <Switch>
-          <PrivateRoute exact path="/" isLoggedIn={isLoggedIn} component={Welcome} />
+          <PrivateRoute exact path="/" token={token} component={Welcome} />
           <Route exact path="/login" render={(props) => <Login />} />
           <Route component={NoMatch} />
         </Switch>
@@ -50,7 +50,7 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-  isLoggedIn: state.user.isLoggedIn
+  token: state.token
 })
 
 export default withRouter(

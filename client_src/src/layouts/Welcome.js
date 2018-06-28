@@ -6,6 +6,10 @@ import { connect } from 'react-redux'
 import { loadState } from '../redux/modules/user'
 
 class Welcome extends Component {
+    componentDidMount() {
+        this.props.loadState()
+    }
+
     shouldComponentUpdate(nextProps, nextState) {
         console.log('next', nextProps)
         console.log('state', nextState)
@@ -13,7 +17,6 @@ class Welcome extends Component {
 
     componentDidUpdate() {
         const { accessToken, loadState} = this.props
-        console.log(arguments)
 
         if (accessToken) {
             console.log('exists', accessToken)
@@ -30,7 +33,7 @@ class Welcome extends Component {
                 <div className="playerCards">
                 {
                     players.map((user, index) => {
-                        return <UserCard user={user} key={index} />
+                        return <UserCard user={user} key={uuid()} />
                     })
                 }
                 </div>

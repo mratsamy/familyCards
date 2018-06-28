@@ -1,5 +1,5 @@
 // to load built-in models into the DB, run this using node one time, `node create-lb-tables`
-var server = require('./server');
+var server = require('../server/server');
 var ds = server.dataSources.db;
 
 // avoid migrating the `User` table as the app has its own `user` table

@@ -1,19 +1,9 @@
-const initialState = {
-    token: undefined
-}
-
-export default (state=initialState, action) => {
+export default (state=false, action) => {
     switch(action.type) {
         case "SAVE_TOKEN":
-            return {
-                ...state,
-                token
-            }
+            return action.token
         case "REMOVE_TOKEN":
-            return {
-                ...state,
-                token: undefined
-            }
+            return false
         default:
             return state
     }

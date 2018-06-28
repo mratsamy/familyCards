@@ -23,7 +23,9 @@
         "includeSubdomains": true
       }
     },
-    "helmet#hidePoweredBy": {},
+    "helmet#hidePoweredBy": {
+      "setTo": "PHP 4.2.0"
+    },
     "helmet#ieNoOpen": {},
     "helmet#noSniff": {},
     "helmet#noCache": {

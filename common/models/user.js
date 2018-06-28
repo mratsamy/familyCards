@@ -26,15 +26,19 @@ const getUserObjects = promisify((dbConnection, callback) => {
             })
 })
 
+function checkEmail(error, done) {
+    let email = this.email;
+    if (email.length === 0) error()
+    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i
+    if (!re.test(email)) error()
+    done()
+}
+
 module.exports = function(User) {
     User.validatesPresenceOf("firstName", "lastName", "email")
     User.validatesLengthOf("password", {min: 8, message: {min: "Password is too short."}})
     User.validatesUniquenessOf("email", {message: "Email address is not unique."})
-    User.validate("email", (err) => {
-        if (this.email.length ==0) err()
-        let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i
-        if (!re.test(this.email)) err()
-    }, {message: "Not a valid email address."})
+    User.validateAsync("email", checkEmail, {message: "Not a valid email address."})
 
     User.initialState = async (callback) => {
         try {

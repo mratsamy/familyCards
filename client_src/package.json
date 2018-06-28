@@ -6,7 +6,7 @@
     "react-scripts": "1.1.4"
   },
   "dependencies": {
-    "@mratsamy/fetch-redux-middleware": "^1.1.0",
+    "@mratsamy/fetch-redux-middleware": "^3.0.1",
     "axios": "^0.18.0",
     "history": "^4.7.2",
     "lodash.throttle": "^4.1.1",
@@ -22,9 +22,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && cp -r build/* ../client",
+    "build": "react-scripts build && cp -R build/* ../client && rm -rf build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:3000/"
+  "proxy": "http://localhost:3000"
 }

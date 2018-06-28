@@ -35,9 +35,10 @@ export const loadState = () => {
                 type: 'FETCH', 
                 url: "/api/users/initialState"
             })
-            dispatch({type: "GET_INITIAL_STATE", payload: data})
+            console.log(response)
+            dispatch({type: "GET_INITIAL_STATE", payload: response})
         } catch(error) { 
-            if (error.response.status == 401) {
+            if (error.response.status === 401) {
                 dispatch({type: "REMOVE_TOKEN"})
             }
         }
@@ -62,8 +63,15 @@ export const login = ({username, password, email}) =>
                 method: "POST",
                 body: data
             })
-            dispatch({type: 'SAVE_TOKEN', payload: response.data.id})
-        } catch (error) { return }
+
+            if (response.status === 200) {
+                const json = await response.json()
+                return dispatch({type: "SAVE_TOKEN", token: json.id})
+            }
+        } catch (error) { 
+            console.log('error',error)
+            return 
+        }
 }
 
 export const logout = accessToken => {

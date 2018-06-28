@@ -3,7 +3,6 @@ import { routerMiddleware } from 'react-router-redux'
 import createHistory from 'history/createBrowserHistory'
 import rootReducer from './modules'
 import thunk from 'redux-thunk'
-import { composeWithDevTools } from 'redux-devtools-extension'
 import { loadState, saveState } from './localStorage'
 import throttle from 'lodash/throttle'
 import { fetchMiddleware } from '@mratsamy/fetch-redux-middleware'
@@ -12,9 +11,8 @@ export const history = createHistory()
 
 const enhancers = []
 const middleware = [
-    fetchMiddleware("token"),
+    fetchMiddleware("token", {headers: {"Accept": "application/json", "Content-Type": "application/json"}}),
     thunk,
-    tokenMiddleware(),
     routerMiddleware(history)
 ]
 
@@ -31,9 +29,12 @@ const composedEnhancers = compose(
     ...enhancers
 )
 
+let persistentState = loadState()
+persistentState = persistentState ? persistentState : undefined
+
 const store = createStore(
     rootReducer,
-    loadState(),
+    persistentState,
     composedEnhancers
 ) 
 
