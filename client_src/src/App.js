@@ -55,7 +55,7 @@ class App extends Component {
 
 const mapStateToProps = state => ({
   token: state.token,
-  isAdmin: state.isAdmin
+  isAdmin: state.user.isAdmin
 })
 
 export default withRouter(
