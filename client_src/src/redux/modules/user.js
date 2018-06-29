@@ -35,10 +35,10 @@ export const loadState = () => {
                 type: 'FETCH', 
                 url: "/api/users/initialState"
             })
-            console.log(response)
-            dispatch({type: "GET_INITIAL_STATE", payload: response})
+            const json = await response.json()
+            return dispatch({type: "GET_INITIAL_STATE", payload: json})
         } catch(error) { 
-            if (error.response.status === 401) {
+            if (error.response.status == 401) {
                 dispatch({type: "REMOVE_TOKEN"})
             }
         }

@@ -5,8 +5,10 @@ import { connect } from 'react-redux'
 
 import './App.css'
 import Welcome from './layouts/Welcome'
+import Sidebar from './components/Sidebar'
+import Profile from './layouts/UserProfile'
+import Admin from './layouts/Admin'
 import Login from './components/Login'
-import Logout from './components/Logout'
 import NoMatch from './layouts/NoMatch'
 
 // font awesome icons
@@ -32,15 +34,17 @@ class App extends Component {
   }
 
   render() {
-    const { token } = this.props
+    const { token, isAdmin } = this.props
 
     return (
       <div>
         {
-          (token) ? <Logout /> : ""
+          (token) ? <Sidebar /> : ""
         }
         <Switch>
           <PrivateRoute exact path="/" token={token} component={Welcome} />
+          <PrivateRoute exact path="/profile" token={token} component={Profile} />
+          <PrivateRoute exact path="/admin" token={token} isAdmin={isAdmin} component={Admin} />
           <Route exact path="/login" render={(props) => <Login />} />
           <Route component={NoMatch} />
         </Switch>
@@ -50,7 +54,8 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-  token: state.token
+  token: state.token,
+  isAdmin: state.isAdmin
 })
 
 export default withRouter(

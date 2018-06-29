@@ -40,7 +40,7 @@ module.exports = function(User) {
     User.validatesUniquenessOf("email", {message: "Email address is not unique."})
     User.validateAsync("email", checkEmail, {message: "Not a valid email address."})
 
-    User.initialState = async (callback) => {
+    User.initialState = async function(callback) {
         try {
             let users = await getUserObjects(User.app.datasources.db.connector)
             return callback(null, users)
@@ -51,14 +51,12 @@ module.exports = function(User) {
 
     User.afterRemote('initialState', function(ctx, user, next) {
         User.findById(ctx.req.accessToken.userId, {include: 'roles'})
-            .then(results => { 
-                ctx.result.user = {
-                    firstName: results.firstName,
-                    lastName: results.lastName,
-                    email: results.email,
-                    username: results.username || "",
-                    isAdmin: results.roles().findIndex(({name: roleName}) => RoleName.toLowerCase() == 'admin') >= 0 ? true:false
-                }
+            .then(results => {
+                ctx.result['firstName'] = results.firstName
+                ctx.result['lastName'] = results.lastName
+                ctx.result['email'] = results.email
+                ctx.result['username'] = results.username || ""
+                ctx.result['isAdmin'] = results.roles().findIndex(({name: roleName}) => roleName.toLowerCase() == 'admin') >= 0 ? true:false
                 next()
             })
             .catch(e => next())

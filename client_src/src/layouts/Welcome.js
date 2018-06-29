@@ -10,29 +10,17 @@ class Welcome extends Component {
         this.props.loadState()
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        console.log('next', nextProps)
-        console.log('state', nextState)
-    }
-
-    componentDidUpdate() {
-        const { accessToken, loadState} = this.props
-
-        if (accessToken) {
-            console.log('exists', accessToken)
-            loadState(accessToken)
-        }
-    }
-
     render() {
-        const { players = [] } = this.props
+        const { user } = this.props
+        const players = user.players || []
+        delete user.players
 
         return (
             <div>
                 <p>Im the welcome page</p>
                 <div className="playerCards">
                 {
-                    players.map((user, index) => {
+                    players.map((user) => {
                         return <UserCard user={user} key={uuid()} />
                     })
                 }
@@ -43,8 +31,7 @@ class Welcome extends Component {
 }
 
 const mapStateToProps = state => ({
-    players: state.players,
-    accessToken: state.accessToken
+    user: state.user
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

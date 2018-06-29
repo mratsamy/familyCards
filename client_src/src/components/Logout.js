@@ -6,8 +6,8 @@ import { logout } from '../redux/modules/user'
 
 class Logout extends Component {
     handleClick = () => {
-        const { logout, accessToken } = this.props
-        logout(accessToken)
+        const { logout, token } = this.props
+        logout(token)
     }
 
     render() {
@@ -22,7 +22,7 @@ class Logout extends Component {
 }
 
 const mapStateToProps = state => ({
-    accessToken: state.user.accessToken
+    token: state.token
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
