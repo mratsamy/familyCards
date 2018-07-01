@@ -3,7 +3,6 @@ export default (state={
 }, action) => {
     switch(action.type) {
         case 'TOGGLE_SIDEBAR':
-            console.log('toggle')
             return {
                 ...state,
                 isOpen: !state.isOpen

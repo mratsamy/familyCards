@@ -9,18 +9,24 @@ const getUserObjects = promisify((dbConnection, callback) => {
             u.lastName,
             u.username,
             u.email,
-            SUM(g.winnings) as total,
-            COUNT(1) as gamesWon
+            IFNULL(g.total, 0) as total,
+            IFNULL(g.gamesWon, 0) as gamesWon
         FROM
-            Game g
-        INNER JOIN
-            User u on g.userId = u.id
-        WHERE
-            g.date >= MAKEDATE(EXTRACT(YEAR FROM CURDATE()),1)                                
-        GROUP BY
-            u.id
+            User as u
+        LEFT JOIN (
+            SELECT
+                SUM(winnings) as total,
+                COUNT(*) as gamesWon,
+                userId
+            FROM
+                Game
+            WHERE
+                date >= MAKEDATE(EXTRACT(YEAR FROM CURDATE()), 1)
+            GROUP BY
+                userId
+        ) as g on u.id = g.userId
         ORDER BY
-            total desc`, [], (error, results) => {
+            total desc, u.lastName, u.firstName`, [], (error, results) => {
                 if (error) return callback(error)
                 callback(null, JSON.parse(JSON.stringify(results)))
             })
