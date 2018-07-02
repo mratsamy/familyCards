@@ -58,6 +58,7 @@ module.exports = function(User) {
     User.afterRemote('initialState', function(ctx, user, next) {
         User.findById(ctx.req.accessToken.userId, {include: 'roles'})
             .then(results => {
+                ctx.result['id'] = results.id
                 ctx.result['firstName'] = results.firstName
                 ctx.result['lastName'] = results.lastName
                 ctx.result['email'] = results.email

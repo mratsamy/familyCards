@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { connect } from 'react-redux'
 
 import Logout from './Logout'
@@ -55,7 +56,9 @@ class Sidebar extends Component {
         if (isOpen) {
             return (
                 <div style={styles}>
-                <a onClick={toggleSidebar}>close</a>
+                <a onClick={toggleSidebar}>
+                    <FontAwesomeIcon icon="times" size="2x" />
+                </a>
                 {this.createModal()}
                     {this.getLinks().map(item => {
                         const {to, text} = item
@@ -68,7 +71,7 @@ class Sidebar extends Component {
         } else {
             return (
                 <div>
-                    <a onClick={toggleSidebar}>open</a>
+                    <a onClick={toggleSidebar}><FontAwesomeIcon icon="bars" size="2x" /></a>
                 </div>
             )
         }

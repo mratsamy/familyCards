@@ -8,13 +8,12 @@
   "scripts": {
     "lint": "eslint .",
     "start": "node .",
-    "dev": "nodemon .",
+    "dev": "concurrently --kill-others \"npm run dev-server\" \"npm run --prefix $INIT_CWD/client_src/ start\"",
+    "build-frontend": "npm run --prefix $INIT_CWD/client_src/ build",
+    "dev-server": "nodemon .",
     "posttest": "npm run lint && nsp check"
   },
   "dependencies": {
-    "@fortawesome/fontawesome": "^1.1.8",
-    "@fortawesome/fontawesome-free-solid": "^5.0.13",
-    "@fortawesome/react-fontawesome": "0.0.20",
     "@mratsamy/fetch-redux-middleware": "^1.0.0",
     "compression": "^1.0.3",
     "cors": "^2.5.2",
@@ -30,6 +29,7 @@
     "uuid": "^3.2.1"
   },
   "devDependencies": {
+    "concurrently": "^3.6.0",
     "eslint": "^3.17.1",
     "eslint-config-loopback": "^8.0.0",
     "nodemon": "^1.17.5",
