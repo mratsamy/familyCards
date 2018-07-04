@@ -9,18 +9,25 @@ const getUserObjects = promisify((dbConnection, callback) => {
             u.lastName,
             u.username,
             u.email,
-            SUM(g.winnings) as total,
-            COUNT(1) as gamesWon
+            u.imgUrl,
+            IFNULL(g.total, 0) as total,
+            IFNULL(g.gamesWon, 0) as gamesWon
         FROM
-            Game g
-        INNER JOIN
-            User u on g.userId = u.id
-        WHERE
-            g.date >= MAKEDATE(EXTRACT(YEAR FROM CURDATE()),1)                                
-        GROUP BY
-            u.id
+            User as u
+        LEFT JOIN (
+            SELECT
+                SUM(winnings) as total,
+                COUNT(*) as gamesWon,
+                userId
+            FROM
+                Game
+            WHERE
+                date >= MAKEDATE(EXTRACT(YEAR FROM CURDATE()), 1)
+            GROUP BY
+                userId
+        ) as g on u.id = g.userId
         ORDER BY
-            total desc`, [], (error, results) => {
+            total desc, u.lastName, u.firstName`, [], (error, results) => {
                 if (error) return callback(error)
                 callback(null, JSON.parse(JSON.stringify(results)))
             })
@@ -52,10 +59,12 @@ module.exports = function(User) {
     User.afterRemote('initialState', function(ctx, user, next) {
         User.findById(ctx.req.accessToken.userId, {include: 'roles'})
             .then(results => {
+                ctx.result['id'] = results.id
                 ctx.result['firstName'] = results.firstName
                 ctx.result['lastName'] = results.lastName
                 ctx.result['email'] = results.email
                 ctx.result['username'] = results.username || ""
+                ctx.result['imgUrl'] = results.imgUrl
                 ctx.result['isAdmin'] = results.roles().findIndex(({name: roleName}) => roleName.toLowerCase() == 'admin') >= 0 ? true:false
                 next()
             })

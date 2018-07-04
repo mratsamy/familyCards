@@ -41,8 +41,8 @@ const store = createStore(
 // throttle ensures that saveState is only called once every 1 sec., doing this because JSON.serialize can be expensive
 store.subscribe(throttle(() => {
     // pull out items of state to persist in localStorage
-    const { token } = store.getState()
-    saveState({token})
+    const { token, user } = store.getState()
+    saveState({token, user})
 }), 1000) 
 
 export default store

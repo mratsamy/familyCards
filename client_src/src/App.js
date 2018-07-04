@@ -12,9 +12,10 @@ import Login from './components/Login'
 import NoMatch from './layouts/NoMatch'
 
 // font awesome icons
-import fontawesome from '@fortawesome/fontawesome'
-import faCircleNotch from '@fortawesome/fontawesome-free-solid/faCircleNotch'
-fontawesome.library.add(faCircleNotch)
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleNotch, faBars, faTimes } from '@fortawesome/free-solid-svg-icons'
+library.add(faCircleNotch, faBars, faTimes)
 
 const PrivateRoute = ({component: Component, ...rest}) => (
   <Route {...rest} render={(props) => (
