@@ -16,7 +16,6 @@ class Sidebar extends Component {
     }
 
     toggleModal = () => {
-        console.log(this.state)
         this.setState({isModalOpen: !this.state.isModalOpen})
     }
 
@@ -64,7 +63,7 @@ class Sidebar extends Component {
                         const {to, text} = item
                         return <div key={uuid()}><Link to={to}>{text}</Link></div>
                     })}
-                    {(isAdmin) ? <div><a onClick={this.toggleModal}>hi</a></div> : ""}
+                    {(isAdmin) ? <div><a href="#" onClick={this.toggleModal}>Add New Score</a></div> : ""}
                     <Logout />
                 </div>
             )
@@ -88,7 +87,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    toggleSidebar
+    toggleSidebar,
+    dispatch
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Sidebar)

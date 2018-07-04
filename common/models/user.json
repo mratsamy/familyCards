@@ -13,6 +13,9 @@
     "lastName": {
       "type": "string",
       "required": true
+    },
+    "imgUrl": {
+      "type": "string"
     }
   },
   "validations": [],

@@ -4,6 +4,7 @@ export default (state={
     lastName: '',
     username: '',
     email: '',
+    imgUrl: '',
     redirect: false,
     players: []
 }, action) => {
@@ -82,5 +83,16 @@ export const logout = accessToken => {
             /* regardless of response dispatch remove */ 
         }
         dispatch({type: "REMOVE_TOKEN"})
+    }
+}
+
+export const updateImgUrl = (userId, url) => {
+    return dispatch => {
+        return dispatch({
+            type: "FETCH",
+            url: `/api/users/${userId}`,
+            method: "PATCH",
+            body: {imgUrl: url}
+        })
     }
 }

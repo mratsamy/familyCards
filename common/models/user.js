@@ -9,6 +9,7 @@ const getUserObjects = promisify((dbConnection, callback) => {
             u.lastName,
             u.username,
             u.email,
+            u.imgUrl,
             IFNULL(g.total, 0) as total,
             IFNULL(g.gamesWon, 0) as gamesWon
         FROM
@@ -63,6 +64,7 @@ module.exports = function(User) {
                 ctx.result['lastName'] = results.lastName
                 ctx.result['email'] = results.email
                 ctx.result['username'] = results.username || ""
+                ctx.result['imgUrl'] = results.imgUrl
                 ctx.result['isAdmin'] = results.roles().findIndex(({name: roleName}) => roleName.toLowerCase() == 'admin') >= 0 ? true:false
                 next()
             })
