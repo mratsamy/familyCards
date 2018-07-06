@@ -5,17 +5,18 @@ import { connect } from 'react-redux'
 
 import './App.css'
 import Welcome from './layouts/Welcome'
-import Sidebar from './components/Sidebar'
 import Profile from './layouts/UserProfile'
 import Admin from './layouts/Admin'
 import Login from './components/Login'
 import NoMatch from './layouts/NoMatch'
+import AppBar from './components/AppBar'
 
 // font awesome icons
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleNotch, faBars, faTimes } from '@fortawesome/free-solid-svg-icons'
-library.add(faCircleNotch, faBars, faTimes)
+import { faCircleNotch, faBars, faTimes, faDiceFive, faAddressCard, 
+  faHome, faToolbox, faSignOutAlt, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+library.add(faCircleNotch, faBars, faTimes, faDiceFive, faAddressCard, faHome, 
+  faToolbox, faSignOutAlt, faPlusCircle)
 
 const PrivateRoute = ({component: Component, ...rest}) => (
   <Route {...rest} render={(props) => (
@@ -39,9 +40,7 @@ class App extends Component {
 
     return (
       <div>
-        {
-          (token) ? <Sidebar /> : ""
-        }
+          <AppBar />
         <Switch>
           <PrivateRoute exact path="/" token={token} component={Welcome} />
           <PrivateRoute exact path="/profile" token={token} component={Profile} />

@@ -1,13 +1,29 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
+import { withRouter } from 'react-router-dom'
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
+import List from '@material-ui/core/List'
+import compose from 'recompose/compose'
+import ListItem from '@material-ui/core/ListItem'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
 import { Link } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { connect } from 'react-redux'
+import Divider from '@material-ui/core/Divider'
 
-import Logout from './Logout'
+import { logout } from '../redux/modules/user'
 import Modal from './Modal'
 import { toggleSidebar } from '../redux/modules/sidebar'
 const uuid = require('uuid/v4')
+
+const styles = {
+    list: {
+      width: "20vw",
+    },
+  }
 
 class Sidebar extends Component {
     constructor(props) {
@@ -37,20 +53,71 @@ class Sidebar extends Component {
         )
     }
 
+    adminPage = () => {
+        const { isAdmin, history } = this.props
+
+        return isAdmin ? (
+            <ListItem button onClick={() => history.push('/admin')}>
+                <ListItemIcon>
+                    <FontAwesomeIcon icon="toolbox" />
+                </ListItemIcon>
+                <ListItemText primary="Admin" />
+            </ListItem>
+        ) : ""
+    }
+
+    adminModal = () => {
+        const { isAdmin } = this.props
+
+        return isAdmin ? (
+            <ListItem button>
+                <ListItemIcon>
+                    <FontAwesomeIcon icon="plus-circle" />
+                </ListItemIcon>
+                <ListItemText primary="Add Score" />
+            </ListItem>
+        ) : ""
+    }
+
     render() {
-        const { toggleSidebar, isOpen, isAdmin } = this.props
+        const { toggleSidebar, isOpen, isAdmin, classes, history, logout } = this.props
         const links = isOpen ? this.getLinks() : []
 
-        const styles = {
-            width:"35vh",
-            top: 0,
-            bottom: 0,
-            left: 0, 
-            minHeight: "100vh", 
-            backgroundColor: "teal", 
-            zIndex: 1,
-            position: "fixed"
-        }
+        return (
+            <SwipeableDrawer open={isOpen} onClose={toggleSidebar} onOpen={toggleSidebar}>
+                <div
+                tabIndex={0}
+                role="button"
+                onClick={toggleSidebar}
+                onKeyDown={toggleSidebar}
+                className={classes.list}
+                >
+                    <List>
+                        <ListItem button onClick={() => history.push('/')}>
+                            <ListItemIcon>
+                                <FontAwesomeIcon icon="home" />
+                            </ListItemIcon>
+                            <ListItemText primary="Home" />
+                        </ListItem>
+                        <ListItem button onClick={() => history.push('/profile')}>
+                            <ListItemIcon>
+                                <FontAwesomeIcon icon="address-card" />
+                            </ListItemIcon>
+                            <ListItemText primary="Profile" />
+                        </ListItem>
+                        {this.adminPage()}
+                        {this.adminModal()}
+                        <Divider style={{height: "0.3rem"}} />
+                        <ListItem button onClick={logout}>
+                            <ListItemIcon>
+                                <FontAwesomeIcon icon="sign-out-alt" />
+                            </ListItemIcon>
+                            <ListItemText primary="Logout" />
+                        </ListItem>
+                    </List>
+                </div>
+            </SwipeableDrawer>
+        )
 
         if (isOpen) {
             return (
@@ -64,7 +131,6 @@ class Sidebar extends Component {
                         return <div key={uuid()}><Link to={to}>{text}</Link></div>
                     })}
                     {(isAdmin) ? <div><a href="#" onClick={this.toggleModal}>Add New Score</a></div> : ""}
-                    <Logout />
                 </div>
             )
         } else {
@@ -88,7 +154,14 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     toggleSidebar,
-    dispatch
+    logout
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(Sidebar)
+Sidebar.propTypes = {
+    classes: PropTypes.object.isRequired,
+  };
+
+export default compose(
+    withStyles(styles),
+    connect(mapStateToProps, mapDispatchToProps)
+)(withRouter(Sidebar))
