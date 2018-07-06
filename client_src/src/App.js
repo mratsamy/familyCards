@@ -39,7 +39,7 @@ class App extends Component {
     const { token, isAdmin } = this.props
 
     return (
-      <div>
+      <div style={{height: "100%"}}>
           <AppBar />
         <Switch>
           <PrivateRoute exact path="/" token={token} component={Welcome} />

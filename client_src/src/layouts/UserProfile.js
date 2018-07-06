@@ -2,7 +2,23 @@ import React, { Component } from 'react'
 import { connect } from "react-redux"
 import { withRouter } from "react-router-dom"
 import { updateImgUrl } from "../redux/modules/user"
-import { bindActionCreators } from 'redux';
+import { bindActionCreators } from 'redux'
+import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
+import Paper from '@material-ui/core/Paper'
+import Grid from '@material-ui/core/Grid'
+import compose from 'recompose/compose'
+
+const styles = theme => ({
+    root: {
+      flexGrow: 1,
+    },
+    paper: {
+      padding: theme.spacing.unit * 2,
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
+    },
+  })
 
 class UserProfile extends Component {
     updateUserInfo = async (info) => {
@@ -43,38 +59,60 @@ class UserProfile extends Component {
         })
     }
 
-    render() {
-        const { user: {firstName, lastName, username, imgUrl}, history } = this.props
+    displayImage = () => {
+        const { user: { imgUrl, firstName, lastName } } = this.props
+
         return (
-            <div style={{display: "grid"}}>
-                <picture>
-                    <source 
-                        media="(minWidth: 600px)"
-                        srcset={`https://res.cloudinary.com/mratsamy/image/upload/c_crop,g_custom,c_fill,ar_2:1,g_face,f_auto,q_100,w_600/${imgUrl} 600w,
-                                https://res.cloudinary.com/mratsamy/image/upload/c_crop,g_custom,c_fill,ar_2:1,g_face,f_auto,q_100,w_1200/${imgUrl} 1200w`}
-                        sizes="100vw" />
+            <picture>
+                <source 
+                    media="(minWidth: 600px)"
+                    srcset={`https://res.cloudinary.com/mratsamy/image/upload/c_crop,g_custom,c_fill,ar_2:1,g_face,f_auto,q_100,w_600/${imgUrl} 600w,
+                            https://res.cloudinary.com/mratsamy/image/upload/c_crop,g_custom,c_fill,ar_2:1,g_face,f_auto,q_100,w_1200/${imgUrl} 1200w`}
+                    sizes="100vw" />
 
-                    {/*<!-- standard crop -->*/}
-                    <img
-                        srcset={`https://res.cloudinary.com/mratsamy/image/upload/c_crop,g_custom,f_auto,q_100,w_400/${imgUrl} 400w,
-                                https://res.cloudinary.com/mratsamy/image/upload/c_crop,g_custom,f_auto,q_100,w_800/${imgUrl} 800w`}
-                        src={`https://res.cloudinary.com/mratsamy/image/upload/c_crop,g_custom,f_auto,q_100,w_400/${imgUrl}`}
-                        alt={`${lastName},${firstName} User Profile Image`}
-                        sizes="50vw" />
-                </picture>
-                <a href="#" onClick={this.uploadImage}>Upload An Image</a>
+                {/*<!-- standard crop -->*/}
+                <img
+                    srcset={`https://res.cloudinary.com/mratsamy/image/upload/c_crop,g_custom,f_auto,q_100,w_400/${imgUrl} 400w,
+                            https://res.cloudinary.com/mratsamy/image/upload/c_crop,g_custom,f_auto,q_100,w_800/${imgUrl} 800w`}
+                    src={`https://res.cloudinary.com/mratsamy/image/upload/c_crop,g_custom,f_auto,q_100,w_400/${imgUrl}`}
+                    alt={`${lastName},${firstName} User Profile Image`}
+                    sizes="50vw" />
+            </picture>
+        )
+    }
 
-                <label htmlFor="firstName">First Name</label>
-                <input type="text" name="lastName" id="firstName" value={firstName} />
-
-                <label htmlFor="lastName">Last Name</label>
-                <input type="text" name="lastName" id="lastName" value={lastName} />
-
-                <label htmlFor="username">Username</label>
-                <input type="text" name="username" id="username" value={username} />
-
-                <button onClick={()=>{history.push("/")}}>Cancel</button>
-                <button onClick={this.handleSubmit}>Submit</button>
+    render() {
+        const { user: {firstName, lastName, username}, history, classes } = this.props
+        return (
+            <div className={classes.root}>
+                <Grid container>
+                    <Grid item xs={12}>
+                        <Paper className={classes.paper}>
+                            <Grid item xs={12}>
+                                { this.displayImage() }
+                            </Grid>
+                            <Grid item xs={12}>
+                                <a href="#" onClick={this.uploadImage}>Upload An Image</a>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <label htmlFor="firstName">First Name</label>
+                                <input type="text" name="lastName" id="firstName" value={firstName} />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <label htmlFor="lastName">Last Name</label>
+                                <input type="text" name="lastName" id="lastName" value={lastName} />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <label htmlFor="username">Username</label>
+                                <input type="text" name="username" id="username" value={username} />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <button onClick={()=>{history.push("/")}}>Cancel</button>
+                                <button onClick={this.handleSubmit}>Submit</button>
+                            </Grid>
+                        </Paper>
+                    </Grid>
+                </Grid>
             </div>
         )
     }
@@ -88,4 +126,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
     updateImgUrl
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(UserProfile))
+export default compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    withStyles(styles)
+)(withRouter(UserProfile))
