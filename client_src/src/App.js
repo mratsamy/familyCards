@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Route } from 'react-router'
 import { Switch, Redirect, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { CssBaseline, MuiThemeProvider } from '@material-ui/core'
 
 import './App.css'
 import Welcome from './layouts/Welcome'
@@ -10,13 +11,14 @@ import Admin from './layouts/Admin'
 import Login from './components/Login'
 import NoMatch from './layouts/NoMatch'
 import AppBar from './components/AppBar'
+import Theme from './components/Theme'
 
 // font awesome icons
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch, faBars, faTimes, faDiceFive, faAddressCard, 
-  faHome, faToolbox, faSignOutAlt, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+  faHome, faToolbox, faSignOutAlt, faPlusCircle, faCameraRetro, faCog } from '@fortawesome/free-solid-svg-icons'
 library.add(faCircleNotch, faBars, faTimes, faDiceFive, faAddressCard, faHome, 
-  faToolbox, faSignOutAlt, faPlusCircle)
+  faToolbox, faSignOutAlt, faPlusCircle, faCameraRetro, faCog)
 
 const PrivateRoute = ({component: Component, ...rest}) => (
   <Route {...rest} render={(props) => (
@@ -39,16 +41,18 @@ class App extends Component {
     const { token, isAdmin } = this.props
 
     return (
-      <div style={{height: "100%"}}>
-          <AppBar />
-        <Switch>
-          <PrivateRoute exact path="/" token={token} component={Welcome} />
-          <PrivateRoute exact path="/profile" token={token} component={Profile} />
-          <PrivateRoute exact path="/admin" token={token} isAdmin={isAdmin} component={Admin} />
-          <Route exact path="/login" render={(props) => <Login />} />
-          <Route component={NoMatch} />
-        </Switch>
-      </div>
+      <CssBaseline>
+        <MuiThemeProvider theme={Theme} >
+          <AppBar/>
+          <Switch>
+            <PrivateRoute exact path="/" token={token} component={Welcome} />
+            <PrivateRoute exact path="/profile" token={token} component={Profile} />
+            <PrivateRoute exact path="/admin" token={token} isAdmin={isAdmin} component={Admin} />
+            <Route exact path="/login" render={(props) => <Login />} />
+            <Route component={NoMatch} />
+          </Switch>
+        </MuiThemeProvider>
+      </CssBaseline>
     );
   }
 }

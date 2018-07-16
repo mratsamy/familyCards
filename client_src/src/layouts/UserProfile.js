@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from "react-redux"
 import { withRouter } from "react-router-dom"
-import { updateImgUrl } from "../redux/modules/user"
+import { updateImgUrl, updateUser } from "../redux/modules/user"
 import { bindActionCreators } from 'redux'
+import { TextField, withStyles, Button, Paper, Grid } from '@material-ui/core'
 import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
-import Paper from '@material-ui/core/Paper'
-import Grid from '@material-ui/core/Grid'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import compose from 'recompose/compose'
 
 const styles = theme => ({
@@ -18,34 +17,39 @@ const styles = theme => ({
       textAlign: 'center',
       color: theme.palette.text.secondary,
     },
+    button: {
+        margin: theme.spacing.unit,
+    },
+    input: {
+        display: "none",
+    },
+    textField: {
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+        width: 200,
+      },
   })
 
 class UserProfile extends Component {
-    updateUserInfo = async (info) => {
-        const { dispatch, user: {id} } = this.props
-        try {
-            const response = await dispatch({type: "FETCH", method: "PATCH", url: `/api/users/${id}`, ...info})
-        } catch (error) {
-
-        }
+    updateUserInfo = info => {
+        const { updateUser, user: {id} } = this.props
+        updateUser({type: "FETCH", method: "PATCH", url: `/api/users/${id}`, body: {...info}})
     }
 
     handleSubmit = () => {
         const request = {
-            firstName: document.getElementById('firstName'),
-            lastName: document.getElementById('lastName'),
-            username: document.getElementById('username')
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            username: document.getElementById('username').value
         }
 
         this.updateUserInfo(request)
     }
 
     uploadImage = () => {
-        const { dispatch, user: {id}, updateImgUrl } = this.props
+        const { user: {id}, updateImgUrl } = this.props
         window.cloudinary.openUploadWidget({cloud_name: "mratsamy", upload_preset: "t3fiuwxy", cropping: "server", cropping_coordinates_mode: "custom"}, (error, result) => {
-            if (error) {
-                console.log(error)
-            } else {
+            if (!error) {
                 (async () => {
                     try {
                         const imgUrl = result[0].path || null
@@ -66,13 +70,13 @@ class UserProfile extends Component {
             <picture>
                 <source 
                     media="(minWidth: 600px)"
-                    srcset={`https://res.cloudinary.com/mratsamy/image/upload/c_crop,g_custom,c_fill,ar_2:1,g_face,f_auto,q_100,w_600/${imgUrl} 600w,
+                    srcSet={`https://res.cloudinary.com/mratsamy/image/upload/c_crop,g_custom,c_fill,ar_2:1,g_face,f_auto,q_100,w_600/${imgUrl} 600w,
                             https://res.cloudinary.com/mratsamy/image/upload/c_crop,g_custom,c_fill,ar_2:1,g_face,f_auto,q_100,w_1200/${imgUrl} 1200w`}
                     sizes="100vw" />
 
                 {/*<!-- standard crop -->*/}
                 <img
-                    srcset={`https://res.cloudinary.com/mratsamy/image/upload/c_crop,g_custom,f_auto,q_100,w_400/${imgUrl} 400w,
+                    srcSet={`https://res.cloudinary.com/mratsamy/image/upload/c_crop,g_custom,f_auto,q_100,w_400/${imgUrl} 400w,
                             https://res.cloudinary.com/mratsamy/image/upload/c_crop,g_custom,f_auto,q_100,w_800/${imgUrl} 800w`}
                     src={`https://res.cloudinary.com/mratsamy/image/upload/c_crop,g_custom,f_auto,q_100,w_400/${imgUrl}`}
                     alt={`${lastName},${firstName} User Profile Image`}
@@ -84,31 +88,41 @@ class UserProfile extends Component {
     render() {
         const { user: {firstName, lastName, username}, history, classes } = this.props
         return (
-            <div className={classes.root}>
-                <Grid container>
-                    <Grid item xs={12}>
-                        <Paper className={classes.paper}>
+            <div alignItems="stretch" className={classes.root}>
+                <Grid alignItems="stretch" container>
+                    <Grid alignItems="stretch" item xs={12}>
+                        <Paper alignItems="stretch" className={classes.paper}>
                             <Grid item xs={12}>
                                 { this.displayImage() }
                             </Grid>
                             <Grid item xs={12}>
-                                <a href="#" onClick={this.uploadImage}>Upload An Image</a>
+                                <a href="#" onClick={this.uploadImage}><FontAwesomeIcon icon="camera-retro" /> Upload An Image</a>
                             </Grid>
                             <Grid item xs={12}>
-                                <label htmlFor="firstName">First Name</label>
-                                <input type="text" name="lastName" id="firstName" value={firstName} />
+                                <TextField 
+                                    id="firstName" 
+                                    label="First Name"
+                                    className={classes.textField}
+                                    defaultValue={firstName}
+                                    margin="normal" />
+                                <TextField 
+                                    id="lastName" 
+                                    label="Last Name"
+                                    className={classes.textField}
+                                    defaultValue={lastName}
+                                    margin="normal" />
                             </Grid>
                             <Grid item xs={12}>
-                                <label htmlFor="lastName">Last Name</label>
-                                <input type="text" name="lastName" id="lastName" value={lastName} />
+                                <TextField 
+                                    id="username"
+                                    label="Username"
+                                    className={classes.textField}
+                                    defaultValue={username}
+                                    margin="normal" />
                             </Grid>
                             <Grid item xs={12}>
-                                <label htmlFor="username">Username</label>
-                                <input type="text" name="username" id="username" value={username} />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <button onClick={()=>{history.push("/")}}>Cancel</button>
-                                <button onClick={this.handleSubmit}>Submit</button>
+                                <Button onClick={()=>{history.push("/")}} variant="contained" color="secondary" className={classes.button}>Cancel</Button>
+                                <Button onClick={this.handleSubmit} variant="contained" color="primary" className={classes.button}>Save</Button>
                             </Grid>
                         </Paper>
                     </Grid>
@@ -119,12 +133,17 @@ class UserProfile extends Component {
 }
 
 const mapStateToProps = ({user}) => ({
-    user
+    user: user.profile
 })
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-    updateImgUrl
+    updateImgUrl,
+    updateUser
 }, dispatch)
+
+UserProfile.propTypes = {
+    classes: PropTypes.object.isRequired,
+}
 
 export default compose(
     connect(mapStateToProps, mapDispatchToProps),

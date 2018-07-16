@@ -1,52 +1,55 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { withStyles, DialogContent, Dialog, DialogTitle, Slide } from '@material-ui/core' 
+import compose from 'recompose/compose'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-export default class Modal extends Component {
-	componentDidMount() {
-		this.listenForEsc()
-	}
+import { closeModal } from '../redux/modules/modal'
 
-	listenForEsc = () => {
-		const { toggleModal } = this.props 
-		window.addEventListener("keypress", (event) => {
-			if (event.keyCode == 27 && this.props.isOpen) { toggleModal() }
-		})
-	}
+const styles = theme => ({})
 
+class ControlledModal extends Component {
 	render() {
-		const { styles = {}, header, body, isOpen, toggleModal } = this.props
-
-		const defaultStyles = {
-			position: "fixed",
-			top: "45%",
-			left: "50%",
-			transform: "translate(-50%, -50%)",
-			transition: "visibility 5.5s, opacity 5.5s linear",
-			width: "600px",
-			height: "400px",
-			backgroundColor: "red",
-			maxWidth: "100%",
-			maxHeight: "100%"
-		}
-
-		const displayStyles = Object.assign({}, defaultStyles, styles)
-		const modalHead = header ? <h1>{header}</h1> : ""
-		
-		if (isOpen) {
-			return (
-				<div>
-					<div style={displayStyles}>
-					<div className="modalHeader">
-						{modalHead}
-					</div>
-					<div className="modalBody">
-						{body}
-					</div>
-					<button onClick={toggleModal}>Close</button>
-					</div>
-				</div>
-			)
-		} else {
-			return ""
-		}
+		const { title, body, isOpen, closeModal, isFetching, modalDispatchReset=false } = this.props
+		return (
+			<Dialog
+				fullWidth
+				aria-labelledby="modal-title"
+				transitionComponent={(props) => <Slide direction="up" {...props} />}
+				aria-describedby="modal-description"
+				open={isOpen}
+				onBackdropClick={() => closeModal(modalDispatchReset)}
+				onClose={() => closeModal(modalDispatchReset)}>
+					<DialogTitle id="dialog-title">
+						{title}&nbsp;&nbsp;
+						{(isFetching) ? <FontAwesomeIcon icon="cog" spin /> : ""}
+					</DialogTitle>
+					<DialogContent>
+					{body}
+					</DialogContent>
+			</Dialog>
+		)
 	}
 }
+
+ControlledModal.propTypes = {
+	classes: PropTypes.object.isRequired,
+}
+
+const mapStateToProps = state => ({
+	isOpen: state.modal.isOpen,
+	title: state.modal.title,
+	body: state.modal.body,
+	modalDispatchReset: state.modal.modalDispatchReset
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+	closeModal
+}, dispatch)
+
+export default compose(
+	withStyles(styles),
+	connect(mapStateToProps, mapDispatchToProps)
+)(ControlledModal)

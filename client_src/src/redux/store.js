@@ -11,7 +11,7 @@ export const history = createHistory()
 
 const enhancers = []
 const middleware = [
-    fetchMiddleware("token", {headers: {"Accept": "application/json", "Content-Type": "application/json"}}),
+    fetchMiddleware("token", {headers: {"Accept": "application/json", "Content-Type": "application/json"}}, true),
     thunk,
     routerMiddleware(history)
 ]

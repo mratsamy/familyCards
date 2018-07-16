@@ -5,7 +5,8 @@ import App from './App'
 import registerServiceWorker from './registerServiceWorker'
 import { Provider } from 'react-redux'
 import store, { history } from './redux/store'
-import { ConnectedRouter } from 'react-router-redux';
+import { ConnectedRouter } from 'react-router-redux'
+import 'typeface-roboto'
 
 ReactDOM.render(
     <Provider store={store}>

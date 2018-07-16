@@ -5,7 +5,7 @@ export default class UserCard extends Component {
         const {id=null, email='', firstName='', lastName='', gamesWon=null, total=null, username='' } = this.props.user
         
         return (
-            <div userId={id}>
+            <div userid={id}>
                 <p>{firstName}</p>
                 <p>{lastName}</p>
                 <p>{email}</p>

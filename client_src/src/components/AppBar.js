@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
+import { withStyles, AppBar, Toolbar, IconButton, Typography } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -14,8 +10,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { logout } from '../redux/modules/user'
 import Sidebar from './Sidebar'
 import { toggleSidebar } from '../redux/modules/sidebar';
+import Modal from './Modal'
 
-const styles = {
+const styles = theme => ({
     root: {
         flexGrow: 1,
     },
@@ -26,7 +23,7 @@ const styles = {
         marginLeft: -12,
         marginRight: 20,
     },
-}
+})
 
 class MenuAppBar extends Component {
     render() {
@@ -34,17 +31,20 @@ class MenuAppBar extends Component {
         return (
             <div>
                 <AppBar position="static">
+                    <Modal />
                     <Sidebar />
                     <Toolbar>
-                        <IconButton onClick={toggleSidebar} className={classes.menuButton} color="inherit" aria-label="Menu">
-                            <MenuIcon />
-                        </IconButton>
+                        { 
+                            (token) ? <IconButton onClick={toggleSidebar} className={classes.menuButton} color="inherit" aria-label="Menu">
+                                        <MenuIcon />
+                                    </IconButton> : "" 
+                        }
                         <Typography variant="title" color="inherit" className={classes.flex}>
                             <FontAwesomeIcon icon='dice-five' />
                             &nbsp;FamilyCards
                         </Typography>
                         {token && (
-                            <a style={{color: "white", textDecoration: "none"}} href="#" onClick={logout}>Logout</a>
+                            <a style={{color: "#000", textDecoration: "none"}} href="#" onClick={logout}>Logout</a>
                         )}
                     </Toolbar>
                 </AppBar>
@@ -54,7 +54,7 @@ class MenuAppBar extends Component {
 }
 
 const mapStateToProps = state => ({
-    token: state.token
+    token: state.token,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
